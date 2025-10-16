@@ -12,6 +12,7 @@ import SignUp from './pages/Auth/SignUp'
 import Home from './pages/Dashboard/Home'
 import Income from './pages/Dashboard/Income'
 import Expense from './pages/Dashboard/Expense'
+import Authenticate from './pages/Auth/Authenticate'
 
 const App = () => {
     return (
@@ -19,8 +20,13 @@ const App = () => {
             <Router>
                 <Routes>
                     <Route path='/' element={<Root />} />
-                    <Route path='/login' exact element={<Login />} />
-                    <Route path='/signup' exact element={<SignUp />} />
+                    <Route
+                        path='/authenticate'
+                        exact
+                        element={<Authenticate />}
+                    />
+                    {/* <Route path='/login' exact element={<Login />} />
+                    <Route path='/signup' exact element={<SignUp />} /> */}
                     <Route path='/dashboard' exact element={<Home />} />
                     <Route path='/income' exact element={<Income />} />
                     <Route path='/expense' exact element={<Expense />} />
@@ -40,6 +46,6 @@ const Root = () => {
     return isAuthenticated ? (
         <Navigate to='/dashboard' />
     ) : (
-        <Navigate to='/login' />
+        <Navigate to='/authenticate' />
     )
 }

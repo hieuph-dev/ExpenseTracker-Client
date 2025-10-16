@@ -1,28 +1,43 @@
-import React, { useContext, useState } from 'react'
-import AuthLayout from '../../components/layouts/AuthLayout'
-import Input from '../../components/Inputs/Input'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { UserContext } from '../../context/UserContext'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { validateEmail, validatePassword } from '@/utils/helper'
+import { TriangleAlert } from 'lucide-react'
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState(null)
+    // const [isPending, setIsPending] = useState(false)
 
-    const { updateUser } = useContext(UserContext)
+    // const { updateUser } = useContext(UserContext)
     const navigate = useNavigate()
 
     // Handle login Form Submit
     const handleLogin = async (e) => {
         e.preventDefault()
+        setError(null)
+        // setIsPending(true)
 
         if (!validateEmail(email)) {
             setError('Please enter a valid email address')
             return
         }
 
-        if (!password) {
-            setError('Please enter the password')
+        const passwordValidation = validatePassword(password)
+        if (!passwordValidation.isValid) {
+            setError(passwordValidation.errorMessage)
+            // setIsPending(false)
             return
         }
 
@@ -38,7 +53,7 @@ const Login = () => {
 
             if (token) {
                 localStorage.setItem('token', token)
-                updateUser(user)
+                // updateUser(user)
                 navigate('/dashboard')
             }
         } catch (error) {
@@ -51,52 +66,56 @@ const Login = () => {
     }
 
     return (
-        <AuthLayout>
-            <div className='lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center'>
-                <h3 className='text-xl font-semibold text-black'>
-                    Welcome Back
-                </h3>
-                <p className='text-xs text-slate-700 mt-[5px] mb-6'>
-                    Please enter your details to log in
-                </p>
-
-                <form onSubmit={handleLogin}>
-                    <Input
-                        value={email}
-                        onChange={({ target }) => setEmail(target.value)}
-                        label='Email Address'
-                        placeholder='john@gmail.com'
-                        type='text'
-                    />
-
-                    <Input
-                        value={password}
-                        onChange={({ target }) => setPassword(target.value)}
-                        label='Password'
-                        placeholder='Min 8 Characters'
-                        type='password'
-                    />
+        <form onSubmit={handleLogin}>
+            <Card className='flex flex-col gap-5'>
+                <CardHeader>
+                    <CardTitle>Sign In</CardTitle>
+                    <CardDescription className='text-sm text-zinc-600'>
+                        Access your account securely
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className='grid gap-5'>
+                    <div className='grid gap-2'>
+                        <Label htmlFor='signin-email'>Email</Label>
+                        <Input
+                            id='signin-email'
+                            label='Email Address'
+                            value={email}
+                            placeholder='Please enter your email!'
+                            onChange={({ target }) => setEmail(target.value)}
+                        />
+                    </div>
+                    <div className='grid gap-2'>
+                        <Label htmlFor='signin-password'>Password</Label>
+                        <Input
+                            id='signin-password'
+                            type='password'
+                            value={password}
+                            placeholder='Please enter your password!'
+                            onChange={(target) => setPassword(target.value)}
+                        />
+                    </div>
 
                     {error && (
-                        <p className='text-red-500 text-xs pb-2.5'>{error}</p>
+                        // <p className='text-red-500 text-xs pb-2.5'>
+                        <p className='text-red-500 text-sm flex flex-row items-center justify-center gap-2 font-bold'>
+                            <TriangleAlert className='w-4' />
+                            {error}
+                        </p>
                     )}
-
-                    <button type='submit' className='btn-primary'>
-                        LOGIN
-                    </button>
-
-                    <p className='text-[13px] text-slate-800 mt-3'>
-                        Don't have an account?{''}
-                        <Link
-                            className='font-medium text-primary underline'
-                            to='/signup'
-                        >
-                            SignUp
-                        </Link>
-                    </p>
-                </form>
-            </div>
-        </AuthLayout>
+                </CardContent>
+                <CardFooter>
+                    <Button
+                        className='w-full bg-purple-400 disabled:cursor-progress'
+                        // onClick={handleLogin}
+                        // disabled={isPending}
+                    >
+                        {/* {isPending ? 'Signing in...' : 'Sign In'} */}
+                        Sign In
+                    </Button>
+                </CardFooter>
+            </Card>
+        </form>
     )
 }
 
