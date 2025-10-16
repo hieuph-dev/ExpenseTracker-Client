@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
     Card,
@@ -13,21 +13,24 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { validateEmail, validatePassword } from '@/utils/helper'
 import { TriangleAlert } from 'lucide-react'
+import axiosInstance from '@/utils/axiosInstance'
+import { API_PATHS } from '@/utils/apiPaths'
+import { UserContext } from '@/context/UserContext'
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState(null)
-    // const [isPending, setIsPending] = useState(false)
+    const [isPending, setIsPending] = useState(false)
 
-    // const { updateUser } = useContext(UserContext)
+    const { updateUser } = useContext(UserContext)
     const navigate = useNavigate()
 
     // Handle login Form Submit
     const handleLogin = async (e) => {
         e.preventDefault()
         setError(null)
-        // setIsPending(true)
+        setIsPending(true)
 
         if (!validateEmail(email)) {
             setError('Please enter a valid email address')
@@ -37,7 +40,7 @@ const Login = () => {
         const passwordValidation = validatePassword(password)
         if (!passwordValidation.isValid) {
             setError(passwordValidation.errorMessage)
-            // setIsPending(false)
+            setIsPending(false)
             return
         }
 
@@ -53,7 +56,7 @@ const Login = () => {
 
             if (token) {
                 localStorage.setItem('token', token)
-                // updateUser(user)
+                updateUser(user)
                 navigate('/dashboard')
             }
         } catch (error) {
@@ -92,7 +95,7 @@ const Login = () => {
                             type='password'
                             value={password}
                             placeholder='Please enter your password!'
-                            onChange={(target) => setPassword(target.value)}
+                            onChange={({ target }) => setPassword(target.value)}
                         />
                     </div>
 
@@ -108,10 +111,9 @@ const Login = () => {
                     <Button
                         className='w-full bg-purple-400 disabled:cursor-progress'
                         // onClick={handleLogin}
-                        // disabled={isPending}
+                        disabled={isPending}
                     >
-                        {/* {isPending ? 'Signing in...' : 'Sign In'} */}
-                        Sign In
+                        {isPending ? 'Signing in...' : 'Sign In'}
                     </Button>
                 </CardFooter>
             </Card>
