@@ -159,7 +159,7 @@ const SignUp = () => {
                 </CardContent>
                 <CardFooter>
                     <Button
-                        className='w-full bg-purple-300 disabled:cursor-progress'
+                        className='w-full bg-purple-400 disabled:cursor-progress'
                         type='submit'
                         disabled={isPending}
                     >

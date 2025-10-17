@@ -110,7 +110,6 @@ const Login = () => {
                 <CardFooter>
                     <Button
                         className='w-full bg-purple-400 disabled:cursor-progress'
-                        // onClick={handleLogin}
                         disabled={isPending}
                     >
                         {isPending ? 'Signing in...' : 'Sign In'}

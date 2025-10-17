@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { HiOutlineMenu, HiOutlineX } from 'react-icons/hi'
 import SideMenu from './SideMenu'
+import { ComicText } from '../ui/comic-text'
 
 const Navbar = ({ activeMenu }) => {
     const [openSideMenu, setOpenSideMenu] = useState(false)
@@ -19,8 +20,15 @@ const Navbar = ({ activeMenu }) => {
                     <HiOutlineMenu className='text-2xl' />
                 )}
             </button>
-
-            <h2 className='text-lg font-medium text-black'>Expense Tracker</h2>
+            <div className='-mt-1 '>
+                <ComicText
+                    fontSize={2.5}
+                    backgroundColor='var(--color-violet-500)'
+                    dotColor='white'
+                >
+                    Expense Track
+                </ComicText>
+            </div>
 
             {openSideMenu && (
                 <div className='fixed top-[61px] -ml-4 bg-white'>
