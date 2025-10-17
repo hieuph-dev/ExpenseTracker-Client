@@ -27,6 +27,8 @@ const SignUp = () => {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [error, setError] = useState(null)
+    const [isPending, setIsPending] = useState(false)
+
     const { updateUser } = useContext(UserContext)
 
     const navigate = useNavigate()
@@ -34,6 +36,8 @@ const SignUp = () => {
     // Handle Sign Up Form Submit
     const handleSignUp = async (e) => {
         e.preventDefault()
+        setError(null)
+        setIsPending(true)
 
         if (!fullName) {
             setError('Please enter your full name')
@@ -66,17 +70,10 @@ const SignUp = () => {
 
         // SignUp API Call
         try {
-            // Upload image if present
-            if (profilePic) {
-                const imgUploadRes = await uploadImage(profilePic)
-                profileImageUrl = imgUploadRes.imageUrl || ''
-            }
-
             const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
                 fullName,
                 email,
                 password,
-                profileImageUrl,
             })
 
             const { token, user } = response.data
@@ -92,6 +89,8 @@ const SignUp = () => {
             } else {
                 setError('Something went wrong. Please try again.')
             }
+        } finally {
+            setIsPending(false)
         }
     }
 
@@ -161,10 +160,10 @@ const SignUp = () => {
                 <CardFooter>
                     <Button
                         className='w-full bg-purple-300 disabled:cursor-progress'
-                        // onClick={handleSignUp}
-                        // type='submit'
+                        type='submit'
+                        disabled={isPending}
                     >
-                        Sign Up
+                        {isPending ? 'Signing up...' : 'Sign Up'}
                     </Button>
                 </CardFooter>
             </Card>
